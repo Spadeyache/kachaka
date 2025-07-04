@@ -8,14 +8,14 @@ class MotorPublisher : public rclcpp::Node{
     public:
     MotorPublisher() : Node("motor_publisher"){
         publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/tid_kachaka/manual_control/cmd_vel", 10);
-        timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&TwistPublisher::timer_callback, this));
+        timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&MotorPublisher::timer_callback, this));
     }
 
     private:
         void timer_callback(){
             auto message = geometry_msgs::msg::Twist();
             message.linear.x = 0.0;
-            message.angular.z = 0.0;
+            message.angular.z = 0.2;
             publisher_->publish(message);
             RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
         }

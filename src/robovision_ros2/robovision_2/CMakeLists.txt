@@ -26,12 +26,21 @@ ament_target_dependencies(my_processing
     OpenCV
 )
 
+add_executable(motor-publisher src/motor-publisher.cpp)
+ament_target_dependencies(motor-publisher 
+    rclcpp 
+    cv_bridge 
+    sensor_msgs 
+    OpenCV
+)
+
 # Python section
 ament_python_install_package(${PROJECT_NAME})
 
 # Ensure both are included
 install(TARGETS
   my_processing
+  motor-publisher
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS
