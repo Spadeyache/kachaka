@@ -31,21 +31,22 @@ private:
         // it would be better if we can use pid control to make the motor move more smoothly
         auto message = geometry_msgs::msg::Twist();
         message.linear.x = 0.0;
-        if(delta_x_ > 40){
+        if(delta_x_ > 90){
             message.angular.z = -1.0;
         }
-        else if(delta_x_ < -40){
+        else if(delta_x_ < -90){
             message.angular.z = 1.0;
         }
-        else if(abs(delta_x_) < 10){
+        else if(abs(delta_x_) < 20){
             message.angular.z = 0.0;
+            message.linear.x = 0.3;
             // add a code for the motor to move till 10cm form the object
         }
         else{
             if (delta_x_ > 0) {
-                message.angular.z = -0.2;
+                message.angular.z = -0.1;
             } else {
-                message.angular.z = 0.2;
+                message.angular.z = 0.1;
             }
         }
         publisher_->publish(message);
