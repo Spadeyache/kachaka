@@ -12,8 +12,8 @@ public:
         motion_timer_ = this->create_wall_timer(100ms, std::bind(&MotorPublisher::motion_callback, this));
 
         // Timer 2: info logger every 1s
-        info_timer_ = this->create_wall_timer(3s, [this]() {
-            RCLCPP_INFO(this->get_logger(), "node_loop");
+        info_timer_ = this->create_wall_timer(1.5s, [this]() {
+            RCLCPP_INFO(this->get_logger(), "nodegit _loop");
             state_ += 1;
         });
     }
@@ -24,13 +24,13 @@ private:
         if(state_ % 2 == 0){
             auto message = geometry_msgs::msg::Twist();
             message.linear.x = 0.0;
-            message.angular.z = 1.6;
+            message.angular.z = 1.0;
             publisher_->publish(message);
             RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
         }
         else{
             auto message = geometry_msgs::msg::Twist();
-        message.linear.x = -1.6;
+        message.linear.x = -3.0;
         message.angular.z = 0.0;
         publisher_->publish(message);
         RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
