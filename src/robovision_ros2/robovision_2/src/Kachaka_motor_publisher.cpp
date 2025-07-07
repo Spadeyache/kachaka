@@ -30,10 +30,23 @@ private:
         // and then use the predicted delta_x to control the motor
         // it would be better if we can use pid control to make the motor move more smoothly
         auto message = geometry_msgs::msg::Twist();
-        if (delta_x_ > 0) {
-            message.angular.z = -0.2;
-        } else {
-            message.angular.z = 0.2;
+        message.linear.x = 0.0;
+        if(delta_x_ > 40){
+            message.angular.z = -1.0;
+        }
+        else if(delta_x_ < -40){
+            message.angular.z = 1.0;
+        }
+        else if(abs(delta_x_) < 10){
+            message.angular.z = 0.0;
+            // add a code for the motor to move till 10cm form the object
+        }
+        else{
+            if (delta_x_ > 0) {
+                message.angular.z = -0.2;
+            } else {
+                message.angular.z = 0.2;
+            }
         }
         publisher_->publish(message);
         RCLCPP_INFO(this->get_logger(), "Publishing: angular.z=%.2f", message.angular.z);
