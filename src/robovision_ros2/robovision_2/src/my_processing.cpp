@@ -3,6 +3,7 @@
 #include <sensor_msgs/msg/image.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
+#include <std_msgs/msg/int32.hpp>
 
 
 class ImageProcessingNode : public rclcpp::Node
@@ -19,13 +20,18 @@ public:
         image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>(
             "/er_kachaka/front_camera/image_raw", qos, std::bind(&ImageProcessingNode::callback_image, this, std::placeholders::_1));
 
-        
+        // Publishers
+        delta_x_publisher_ = this->create_publisher<std_msgs::msg::Int32>("/kn_delta", 10);
+
         //Processing
         image_processing_timer_ = this->create_wall_timer(
             std::chrono::milliseconds(30),
             std::bind(&ImageProcessingNode::image_processing, this));
 
         RCLCPP_INFO(this->get_logger(), "Starting image_processing application in cpp...");
+
+        //publishers
+        
     }
 
 private:
@@ -36,6 +42,7 @@ private:
     sensor_msgs::msg::Image::SharedPtr image_msg_;
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr delta_x_publisher_;
     rclcpp::TimerBase::SharedPtr image_processing_timer_;
     
     void callback_image(const sensor_msgs::msg::Image::SharedPtr msg)
@@ -59,7 +66,7 @@ private:
             cv::resize(image_, resized_image, cv::Size(), 0.5, 0.5);
 
             // Define ROI to ignore the top third of the image
-            int roi_start_y = resized_image.rows / 3;
+            int roi_start_y = resized_image.rows / 5;
             cv::Rect roi(0, roi_start_y, resized_image.cols, resized_image.rows - roi_start_y);
             cv::Mat image_roi = resized_image(roi);
 
@@ -76,6 +83,15 @@ private:
 
             // Adjust center_y to account for the ROI offset
             center_y += roi_start_y;
+
+            // Calculate delta x
+            int image_center_x = resized_image.cols / 2;
+            int delta_x = center_x - image_center_x;
+
+            // Publish delta x
+            auto message = std_msgs::msg::Int32();
+            message.data = delta_x;
+            delta_x_publisher_->publish(message);
 
             // Draw a red dot at the center of intensity
             cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
