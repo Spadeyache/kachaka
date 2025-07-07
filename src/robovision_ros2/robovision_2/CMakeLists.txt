@@ -36,6 +36,14 @@ ament_target_dependencies(motor-publisher
     sensor_msgs
     OpenCV
 )
+
+add_executable(Kachaka_motor_publisher src/Kachaka_motor_publisher.cpp)
+ament_target_dependencies(Kachaka_motor_publisher 
+    rclcpp 
+    cv_bridge 
+    sensor_msgs
+    OpenCV
+)
 add_executable(blue_Follower src/blue_Follower.cpp)
 ament_target_dependencies(blue_Follower
     rclcpp 
@@ -52,6 +60,7 @@ install(TARGETS
   my_processing
   motor-publisher
   blue_Follower
+  Kachaka_motor_publisher
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS
