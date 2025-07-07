@@ -29,9 +29,6 @@ public:
             std::bind(&ImageProcessingNode::image_processing, this));
 
         RCLCPP_INFO(this->get_logger(), "Starting image_processing application in cpp...");
-
-        //publishers
-        
     }
 
 private:
