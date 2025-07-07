@@ -1,42 +1,39 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
-class MotorPublisher : public rclcpp::Node{
-    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
-    rclcpp::TimerBase::SharedPtr timer_;
+using namespace std::chrono_literals;
 
-    public:
-    MotorPublisher() : Node("motor_publisher"){
-        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/tid_kachaka/manual_control/cmd_vel", 10);
-        timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&MotorPublisher::timer_callback, this));
+class MotorPublisher : public rclcpp::Node {
+public:
+    MotorPublisher() : Node("motor_publisher")
+    {
+        // Timer 1: velocity publisher every 100ms
+        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/er_kachaka/manual_control/cmd_vel", 10);
+        motion_timer_ = this->create_wall_timer(100ms, std::bind(&MotorPublisher::motion_callback, this));
+
+        // Timer 2: info logger every 1s
+        info_timer_ = this->create_wall_timer(1s, [this]() {
+            RCLCPP_INFO(this->get_logger(), "node_loop");
+        });
     }
 
-    private:
-        void timer_callback(){
-            auto message = geometry_msgs::msg::Twist();
-            message.linear.x = 0.0;
-            message.angular.z = 0.2;
-            publisher_->publish(message);
-            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
-            rclcpp::sleep_for(1s);  // equivalent to delay(1000)
-            message.linear.x = 0.0;
-            message.angular.z = 0.0;
-            publisher_->publish(message);
-            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
-            rclcpp::sleep_for(1s);  // equivalent to delay(1000)
-            message.linear.x = 0.0;
-            message.angular.z = -0.2;
-            publisher_->publish(message);
-            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
-            rclcpp::sleep_for(1s);  // equivalent to delay(1000)
-            message.linear.x = 0.0;
-            message.angular.z = 0.0;
-            publisher_->publish(message);
-            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
-        }
+private:
+    void motion_callback()
+    {
+        auto message = geometry_msgs::msg::Twist();
+        message.linear.x = -0.2;
+        message.angular.z = 0.0;
+        publisher_->publish(message);
+        RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
+    }
+
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+    rclcpp::TimerBase::SharedPtr motion_timer_;
+    rclcpp::TimerBase::SharedPtr info_timer_;
 };
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     rclcpp::init(argc, argv);
     auto node = std::make_shared<MotorPublisher>();
     rclcpp::spin(node);
