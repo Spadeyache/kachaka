@@ -47,15 +47,21 @@ private:
     void image_processing()
     {
         if (is_image_){
-            if (counter_ == 0)
-			    std::cout << "size: rows: " << image_.rows << 
+            if (counter_ == 0){
+                std::cout << "size: rows: " << image_.rows << 
                              ", cols: " << image_.cols << 
                              ", depth: " << image_.channels() << std::endl;
-
-            cv::imshow("view", image_);
-            cv::waitKey(1);
-
+            }
             counter_++;
+
+            // Create a binary mask where blue channel > 200
+            cv::Mat binary_mask;
+            cv::inRange(image_, cv::Scalar(200, 0, 0), cv::Scalar(255, 0, 0), binary_mask);
+
+            // Display the binary mask
+            cv::imshow("binary_mask", binary_mask);
+            cv::waitKey(1);
+   
         }
         
     }
