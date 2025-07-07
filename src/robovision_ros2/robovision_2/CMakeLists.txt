@@ -33,11 +33,11 @@ add_executable(motor-publisher src/motor-publisher.cpp)
 ament_target_dependencies(motor-publisher 
     rclcpp 
     cv_bridge 
-    sensor_msgs 
+    sensor_msgs
     OpenCV
 )
-add_executable(blue-detector src/blue-detector.cpp)
-ament_target_dependencies(blue-detector
+add_executable(blue_Follower src/blue_Follower.cpp)
+ament_target_dependencies(blue_Follower
     rclcpp 
     cv_bridge 
     sensor_msgs 
@@ -51,7 +51,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(TARGETS
   my_processing
   motor-publisher
-  blue-detector
+  blue_Follower
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS
