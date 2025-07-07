@@ -58,9 +58,14 @@ private:
             cv::Mat resized_image;
             cv::resize(image_, resized_image, cv::Size(), 0.5, 0.5);
 
+            // Define ROI to ignore the top third of the image
+            int roi_start_y = resized_image.rows / 3;
+            cv::Rect roi(0, roi_start_y, resized_image.cols, resized_image.rows - roi_start_y);
+            cv::Mat image_roi = resized_image(roi);
+
             // Convert to HSV and create a binary mask
             cv::Mat hsv;
-            cv::cvtColor(resized_image, hsv, cv::COLOR_BGR2HSV);
+            cv::cvtColor(image_roi, hsv, cv::COLOR_BGR2HSV);
             cv::Mat binary_mask;
             cv::inRange(hsv, cv::Scalar(100, 150, 0), cv::Scalar(140, 255, 255), binary_mask);
 
@@ -68,6 +73,9 @@ private:
             cv::Moments m = cv::moments(binary_mask, true);
             int center_x = static_cast<int>(m.m10 / m.m00);
             int center_y = static_cast<int>(m.m01 / m.m00);
+
+            // Adjust center_y to account for the ROI offset
+            center_y += roi_start_y;
 
             // Draw a red dot at the center of intensity
             cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
