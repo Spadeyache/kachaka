@@ -26,6 +26,9 @@ public:
 private:
     void motion_callback()
     {
+        // Instead of simple on-off control, we can do sth like using the past delta_x to predict the next delta_x
+        // and then use the predicted delta_x to control the motor
+        // it would be better if we can use pid control to make the motor move more smoothly
         auto message = geometry_msgs::msg::Twist();
         if (delta_x_ > 0) {
             message.angular.z = -0.2;
