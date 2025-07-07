@@ -5,7 +5,7 @@ using namespace std::chrono_literals;
 
 class MotorPublisher : public rclcpp::Node {
 public:
-    MotorPublisher() : Node("motor_publisher"), state_(1)
+    MotorPublisher() : Node("motor_publisher"), state_(0)
     {
         // Timer 1: velocity publisher every 100ms
         publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/er_kachaka/manual_control/cmd_vel", 10);
@@ -21,10 +21,10 @@ public:
 private:
     void motion_callback()
     {
-        if(state_ % 4 == 0){
+        if(state_ % 2 == 0){
             auto message = geometry_msgs::msg::Twist();
-            message.linear.x = 1.6;
-            message.angular.z = 0.0;
+            message.linear.x = 0.0;
+            message.angular.z = 1.6;
             publisher_->publish(message);
             RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
         }
