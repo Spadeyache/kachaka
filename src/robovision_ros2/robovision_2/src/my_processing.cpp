@@ -56,14 +56,18 @@ private:
 
             // Create a binary mask where blue channel > 200
             cv::Mat binary_mask;
-            cv::inRange(image_, cv::Scalar(200, 0, 0), cv::Scalar(255, 0, 0), binary_mask);
+            cv::Mat hsv;
+            cv::cvtColor(image_, hsv, cv::COLOR_BGR2HSV);
+            // cv::inRange(hsv, cv::Scalar(0, 0, 0), cv::Scalar(255, 255, 255), binary_mask);
+            cv::inRange(hsv, cv::Scalar(100, 150, 0), cv::Scalar(140, 255, 255), binary_mask);
 
             // Display the binary mask
             cv::imshow("binary_mask", binary_mask);
+            cv::imshow("raw", image_);
             cv::waitKey(1);
    
         }
-        
+
     }
 };
 
