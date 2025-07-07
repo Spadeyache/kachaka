@@ -13,8 +13,12 @@ public:
         counter_ = 0;
 
         //Subscribers
+        rclcpp::QoS qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_sensor_data));
+        qos.reliability(RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT);
+
         image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "camera/image", 10, std::bind(&ImageProcessingNode::callback_image, this, std::placeholders::_1));
+            "/er_kachaka/front_camera/image_raw", qos, std::bind(&ImageProcessingNode::callback_image, this, std::placeholders::_1));
+
         
         //Processing
         image_processing_timer_ = this->create_wall_timer(
@@ -53,6 +57,7 @@ private:
 
             counter_++;
         }
+        
     }
 };
 

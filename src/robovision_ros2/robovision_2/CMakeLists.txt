@@ -36,6 +36,13 @@ ament_target_dependencies(motor-publisher
     sensor_msgs 
     OpenCV
 )
+add_executable(blue-detector src/blue-detector.cpp)
+ament_target_dependencies(blue-detector
+    rclcpp 
+    cv_bridge 
+    sensor_msgs 
+    OpenCV
+)
 
 # Python section
 ament_python_install_package(${PROJECT_NAME})
@@ -44,6 +51,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(TARGETS
   my_processing
   motor-publisher
+  blue-detector
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS

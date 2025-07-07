@@ -14,7 +14,7 @@ public:
         qos.reliability(RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT);
 
         image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "/er_kachaka/back_camera/image_raw", qos, std::bind(&ImageSubscriberNode::callback_image, this, std::placeholders::_1));
+            "/er_kachaka/front_camera/image_raw", qos, std::bind(&ImageSubscriberNode::callback_image, this, std::placeholders::_1));
 
 
         //Processing
