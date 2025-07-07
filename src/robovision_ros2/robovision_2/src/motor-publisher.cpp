@@ -18,6 +18,21 @@ class MotorPublisher : public rclcpp::Node{
             message.angular.z = 0.2;
             publisher_->publish(message);
             RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
+            rclcpp::sleep_for(1s);  // equivalent to delay(1000)
+            message.linear.x = 0.0;
+            message.angular.z = 0.0;
+            publisher_->publish(message);
+            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
+            rclcpp::sleep_for(1s);  // equivalent to delay(1000)
+            message.linear.x = 0.0;
+            message.angular.z = -0.2;
+            publisher_->publish(message);
+            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
+            rclcpp::sleep_for(1s);  // equivalent to delay(1000)
+            message.linear.x = 0.0;
+            message.angular.z = 0.0;
+            publisher_->publish(message);
+            RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f, angular.z=%.2f", message.linear.x, message.angular.z);
         }
 };
 
