@@ -10,18 +10,23 @@ class RGBDPointCloudNode : public rclcpp::Node
 public:
     RGBDPointCloudNode() : Node("rgbd_point_cloud_node")
     {
-        // Subscribers
+
+        //Subscribers
+        rclcpp::QoS qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_sensor_data));
+        qos.reliability(RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT);
+
         rgb_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "/camera/rgb/image_raw", 10, 
-            std::bind(&RGBDPointCloudNode::callback_rgb, this, std::placeholders::_1));
+            "/er_kachaka/front_camera/image_raw", qos, std::bind(&RGBDPointCloudNode::callback_rgb, this, std::placeholders::_1));
         
         depth_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "/camera/depth/image_raw", 10, 
+            "/er_kachaka/tof_camera/image_raw", qos, 
             std::bind(&RGBDPointCloudNode::callback_depth, this, std::placeholders::_1));
         
         // Publisher
         point_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
-            "/camera/point_cloud", 10);
+            "/kn_point_cloud", 10);
+
+        RCLCPP_INFO(this->get_logger(), "Starting rgbd_point_cloud_node application in cpp...");
     }
 
 private:
@@ -103,9 +108,9 @@ private:
 
                     // Assign RGB values
                     cv::Vec3b rgb = rgb_image_.at<cv::Vec3b>(v, u);
-                    *iter_r = rgb[2];
-                    *iter_g = rgb[1];
-                    *iter_b = rgb[0];
+                    *iter_r = rgb[2]; // Red channel
+                    *iter_g = rgb[1]; // Green channel
+                    *iter_b = rgb[0]; // Blue channel
                 }
             }
         }
