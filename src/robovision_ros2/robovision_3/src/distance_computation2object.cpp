@@ -43,9 +43,13 @@ private:
             return;
         }
 
-        // Assuming the center of mass coordinates are in the same frame as the point cloud
-        int u = static_cast<int>(latest_center_of_mass_->x);
-        int v = static_cast<int>(latest_center_of_mass_->y);
+        // Define the scaling factors based on the resolutions
+        const float scaling_factor_x = 4.0; // 640 / 160
+        const float scaling_factor_y = 3.0; // 360 / 120
+
+        // Scale the center of mass coordinates
+        int u = static_cast<int>(std::round(latest_center_of_mass_->x / scaling_factor_x));
+        int v = static_cast<int>(std::round(latest_center_of_mass_->y / scaling_factor_y));
 
         // Ensure the indices are within the point cloud dimensions
         if (u < 0 || v < 0 || static_cast<unsigned int>(u) >= latest_pointcloud_->width || static_cast<unsigned int>(v) >= latest_pointcloud_->height) {
