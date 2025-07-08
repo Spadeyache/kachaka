@@ -71,7 +71,13 @@ private:
             cv::Mat hsv;
             cv::cvtColor(image_roi, hsv, cv::COLOR_BGR2HSV);
             cv::Mat binary_mask;
-            cv::inRange(hsv, cv::Scalar(100, 150, 0), cv::Scalar(140, 255, 255), binary_mask);
+            cv::inRange(hsv, cv::Scalar(100, 220, 0), cv::Scalar(110, 255, 255), binary_mask);
+            // 100, 150, 0 - 140, 255, 255
+
+            // Apply morphological operations for noise reduction
+            cv::Mat morph_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+            cv::erode(binary_mask, binary_mask, morph_kernel);
+            cv::dilate(binary_mask, binary_mask, morph_kernel);
 
             // Find the center of intensity
             cv::Moments m = cv::moments(binary_mask, true);
