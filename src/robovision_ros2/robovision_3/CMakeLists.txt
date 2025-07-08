@@ -41,6 +41,7 @@ ament_target_dependencies(pointcloud_publisher
   rclcpp
   sensor_msgs
   image_transport
+  OpenCV
   cv_bridge
   message_filters
 )
