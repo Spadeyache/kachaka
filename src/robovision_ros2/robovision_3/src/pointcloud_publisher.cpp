@@ -30,7 +30,7 @@ public:
       "/er_kachaka/tof_camera/camera_info", qos,
       std::bind(&RGBDToPointCloud::depth_info_callback, this, std::placeholders::_1));
 
-    pc_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/pointcloud", 10);
+    pc_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/kn_pointcloud2", 10);
   }
 
 private:
