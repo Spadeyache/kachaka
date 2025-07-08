@@ -33,13 +33,24 @@ ament_target_dependencies(rgbd_reader
     tf2
     tf2_geometry_msgs
 )
+add_executable(rgbd_pointClowd src/rgbd_pointClowd.cpp)
+ament_target_dependencies(rgbd_pointClowd 
+    rclcpp 
+    cv_bridge 
+    sensor_msgs 
+    geometry_msgs
+    OpenCV
+    tf2
+    tf2_geometry_msgs
+)
 
 # Python section
 ament_python_install_package(${PROJECT_NAME})
 
 # Ensure both are included
 install(TARGETS
-rgbd_reader
+  rgbd_reader
+  rgbd_pointClowd
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS
