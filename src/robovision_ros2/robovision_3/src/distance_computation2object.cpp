@@ -51,6 +51,10 @@ private:
         int u = static_cast<int>(std::round(latest_center_of_mass_->x / scaling_factor_x));
         int v = static_cast<int>(std::round(latest_center_of_mass_->y / scaling_factor_y));
 
+        // Clamp the coordinates to ensure they are within the valid range -- this is not optimal I need to find out why I gotthe out of range error
+        u = std::max(0, std::min(u, static_cast<int>(latest_pointcloud_->width) - 1));
+        v = std::max(0, std::min(v, static_cast<int>(latest_pointcloud_->height) - 1));
+
         // Ensure the indices are within the point cloud dimensions
         if (u < 0 || v < 0 || static_cast<unsigned int>(u) >= latest_pointcloud_->width || static_cast<unsigned int>(v) >= latest_pointcloud_->height) {
             RCLCPP_WARN(this->get_logger(), "Center of mass is out of point cloud bounds.");
