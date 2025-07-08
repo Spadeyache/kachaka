@@ -4,6 +4,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/opencv.hpp>
 #include <std_msgs/msg/int32.hpp>
+#include <geometry_msgs/msg/point.hpp>
 
 
 class ImageProcessingNode : public rclcpp::Node
@@ -22,6 +23,7 @@ public:
 
         // Publishers
         delta_x_publisher_ = this->create_publisher<std_msgs::msg::Int32>("/kn_delta", 10);
+        center_of_mass_publisher_ = this->create_publisher<geometry_msgs::msg::Point>("/center_of_mass", 10);
 
         //Processing
         image_processing_timer_ = this->create_wall_timer(
@@ -40,6 +42,7 @@ private:
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
     rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr delta_x_publisher_;
+    rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr center_of_mass_publisher_;
     rclcpp::TimerBase::SharedPtr image_processing_timer_;
     
     void callback_image(const sensor_msgs::msg::Image::SharedPtr msg)
@@ -95,6 +98,13 @@ private:
             auto message = std_msgs::msg::Int32();
             message.data = delta_x;
             delta_x_publisher_->publish(message);
+
+            // Publish center of mass
+            auto center_of_mass_message = geometry_msgs::msg::Point();
+            center_of_mass_message.x = center_x;
+            center_of_mass_message.y = center_y;
+            center_of_mass_message.z = 0; // z is not used
+            center_of_mass_publisher_->publish(center_of_mass_message);
 
             // Draw a red dot at the center of intensity
             cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);

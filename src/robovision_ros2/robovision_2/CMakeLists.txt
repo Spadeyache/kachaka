@@ -17,6 +17,7 @@ find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 include_directories(${cv_bridge_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
@@ -27,6 +28,7 @@ ament_target_dependencies(my_processing
     cv_bridge 
     sensor_msgs 
     OpenCV
+    geometry_msgs
 )
 
 add_executable(motor-publisher src/motor-publisher.cpp)
