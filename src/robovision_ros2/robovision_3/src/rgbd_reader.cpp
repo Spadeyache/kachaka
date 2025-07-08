@@ -24,15 +24,15 @@ public:
 
         // Subscribers
         rgb_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "/camera/rgb/image_rect_color", 10, 
+            "/er_kachaka/back_camera/image_raw", 10, 
             std::bind(&PointCloudCentroidNode::callback_rgb_rect, this, std::placeholders::_1));
         
         depth_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-            "/camera/depth_registered/image", 10, 
+            "/er_kachaka/tof_camera/image_raw", 10, 
             std::bind(&PointCloudCentroidNode::callback_depth_rect, this, std::placeholders::_1));
         
         point_cloud_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/camera/depth_registered/points", 10, 
+            "/er_kachaka/tof_camera/image_raw/compressedDepth", 10, 
             std::bind(&PointCloudCentroidNode::callback_point_cloud, this, std::placeholders::_1));
         
         // Processing

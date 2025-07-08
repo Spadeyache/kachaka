@@ -1,0 +1,167 @@
+[33mcommit eac9b2b8995b81244613249924a29bb8ae9cfcb7[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Tue Jul 8 00:36:57 2025 -0400
+
+    add morph opration
+
+[33mcommit e1d3708f1ef9fa2d467c25951352aa8c4aaf8af5[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Tue Jul 8 00:27:17 2025 -0400
+
+    rm morpholigical operator
+
+[33mcommit eb5ed71cad9abd66bd0e8de9265ebbeedc84a235[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Tue Jul 8 00:24:14 2025 -0400
+
+    rm morpholigical operator
+
+[33mcommit de7075049efbb8afd415e1c3cfc11748db385e36[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Tue Jul 8 00:20:41 2025 -0400
+
+    small adjustments
+
+[33mcommit 254390e1411b5da6f118f1871a4841ddbf72c159[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Tue Jul 8 00:18:23 2025 -0400
+
+    added Morphological Operations
+
+[33mcommit b63fc206831fbd51b8cb1a6df80175242a929345[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 17:30:16 2025 +0900
+
+    adjustments to run on real robot
+
+[33mcommit 48a941d10ac51e138cddda96f3141723b7b180f3[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 04:09:52 2025 -0400
+
+    added comments and code for somewhat smooth spin to continue with code for going foward
+
+[33mcommit 8cb784b715068b19e4202ff388fb347c0da83527[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 04:04:52 2025 -0400
+
+    added comments for future, smother movment
+
+[33mcommit 439d529fc8391b45248a3b49d5694c46c09e1777[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 16:55:40 2025 +0900
+
+    many adjustments to files and numbers so it made sence
+
+[33mcommit a45c0b42318fc41678393b0399986f8ad945f61e[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 03:48:41 2025 -0400
+
+    updated motor-pub: pubs gain based on delta_x
+
+[33mcommit 2ed5063d9096498575297431d6ec92ab675790d6[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 03:39:36 2025 -0400
+
+    added the subscriber
+
+[33mcommit 155aa5b238d7829af8420fd77ae33d8e4eb7e9e4[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 16:36:58 2025 +0900
+
+    adjusted the file struc to start with modifiing the blue_Follower
+
+[33mcommit e7537e4cf8c2bce57e0fe1554d8cd39893e0be01[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 16:28:57 2025 +0900
+
+    checked if it works
+
+[33mcommit d0df64ea77f0877e57305383d88b85fab9807354[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 03:19:13 2025 -0400
+
+    added a publisher that prints a int32 of delta x from the center of the image to the center of blue
+
+[33mcommit a258976c4836c36ef47677dea4c8ad07bf521b16[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 03:01:14 2025 -0400
+
+    added ROI
+
+[33mcommit 9a6117219a0d6408c7abc97be1d078fc4e8c8150[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 02:57:02 2025 -0400
+
+    added resize, and calculating center of mass
+
+[33mcommit b0dfbff2f862ec43e5884f8c4c7ab348c7ff5f05[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 15:51:31 2025 +0900
+
+    made adjustments on Blue masking(used HSV)
+
+[33mcommit 20e2e34b8f2e536bd3774d899b66b7a8929514e8[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 02:37:30 2025 -0400
+
+    blue masking
+
+[33mcommit 3557916e35013c6acbae7912200a525f7de4e235[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 15:25:38 2025 +0900
+
+    now, starting to work on my_proccesing and blue detector
+
+[33mcommit b98eab797849cd75d1cb37340dff41ccb6d8d84a[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 13:37:17 2025 +0900
+
+    adjusted the parms
+
+[33mcommit 6e35f44c92780c50adb60c23650c6b2ce5f24151[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Mon Jul 7 00:24:10 2025 -0400
+
+    modify for square movment
+
+[33mcommit 07032541ed225093873ff6040327610103ebbf38[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 13:08:25 2025 +0900
+
+    mtr controol with timer
+
+[33mcommit 4ee69dd72dd8182582fc28333c127f8a35169d2c[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Mon Jul 7 11:09:04 2025 +0900
+
+    print every 100ms
+
+[33mcommit 1b2ce1fc183ce239f0b1f714819ff891b0a06acb[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Sun Jul 6 20:59:00 2025 -0400
+
+    cont movment for mtr pub
+
+[33mcommit 7d25612c6fe32e39647d70a5637c9765d0b4e189[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Fri Jul 4 18:34:50 2025 +0900
+
+    .cpp code adjustment and added setting to CMakeList
+
+[33mcommit 56e0e572c3f180e9e15cc437502d2f8bd092caf7[m
+Author: SpadeMSI-Ubuntu <magic.global.k@gmail.com>
+Date:   Fri Jul 4 05:26:17 2025 -0400
+
+    add motor-publisher.cpp
+
+[33mcommit 36f3088469c4951fc7073a00a222253a6e2e1149[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Fri Jul 4 18:17:15 2025 +0900
+
+    initial commit
+
+[33mcommit 6340155544a934d9621f016e78abfde356e3646f[m
+Author: luis_contreras <tenshi.unam@gmail.com>
+Date:   Fri Jul 4 18:16:47 2025 +0900
+
+    init
