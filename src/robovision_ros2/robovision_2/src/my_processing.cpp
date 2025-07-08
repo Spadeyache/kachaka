@@ -60,7 +60,7 @@ private:
 
             // Reduce resolution for less computation
             cv::Mat resized_image;
-            cv::resize(image_, resized_image, cv::Size(), 0.1, 0.1);//0.5
+            cv::resize(image_, resized_image, cv::Size(), 0.5, 0.5);
 
             // Define ROI to ignore the top third of the image
             int roi_start_y = resized_image.rows / 5;
