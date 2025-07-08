@@ -31,9 +31,9 @@ public:
             "/er_kachaka/tof_camera/image_raw", 10, 
             std::bind(&PointCloudCentroidNode::callback_depth_rect, this, std::placeholders::_1));
         
-        point_cloud_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+        point_cloud_sub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
             "/er_kachaka/tof_camera/image_raw/compressedDepth", 10, 
-            std::bind(&PointCloudCentroidNode::callback_point_cloud, this, std::placeholders::_1));
+            std::bind(&PointCloudCentroidNode::callback_compressed_image, this, std::placeholders::_1));
         
         // Processing
         processing_timer_ = this->create_wall_timer(
@@ -53,7 +53,7 @@ private:
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr rgb_sub_;
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr depth_sub_;
-    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::CompressedImage>::SharedPtr point_cloud_sub_;
 
     rclcpp::TimerBase::SharedPtr processing_timer_;
 
@@ -88,38 +88,32 @@ private:
         }
     }
 
-    void callback_point_cloud(const sensor_msgs::msg::PointCloud2::SharedPtr msg) 
+    void callback_compressed_image(const sensor_msgs::msg::CompressedImage::SharedPtr msg) 
     {
-        is_ptcld_ = false;
         try
         {
-            // Ensure the point cloud is organized
-            if (msg->height > 1)
+            // Decode the compressed image data into a cv::Mat
+            cv::Mat image = cv::imdecode(cv::Mat(msg->data), cv::IMREAD_COLOR);
+
+            if (!image.empty())
             {
-                // Convert PointCloud2 to cv::Mat
-                point_cloud_ = cv::Mat(msg->height, msg->width, CV_32FC4);
-                const uint8_t *data_ptr = msg->data.data();
+                // Process the image as needed
+                RCLCPP_INFO(this->get_logger(), "Compressed image received with size [%d, %d]", image.rows, image.cols);
 
-                for (size_t i = 0; i < msg->height; ++i) 
-                {
-                    for (size_t j = 0; j < msg->width; ++j) 
-                    {
-                        const float *point = reinterpret_cast<const float*>(data_ptr + (i * msg->row_step + j * msg->point_step));
-                        point_cloud_.at<cv::Vec4f>(i, j) = cv::Vec4f(point[0], point[1], point[2], point[3]);
-                    }
-                }
+                // Example: Convert to grayscale
+                cv::Mat gray_image;
+                cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
 
-                is_ptcld_ = true;
-                RCLCPP_INFO(this->get_logger(), "Point cloud converted to cv::Mat with size [%d, %d]", msg->height, msg->width);
+                // You can add further processing here
             }
             else
             {
-                RCLCPP_WARN(this->get_logger(), "Point cloud is not organized. Cannot convert to cv::Mat.");
+                RCLCPP_WARN(this->get_logger(), "Failed to decode compressed image.");
             }
         }
         catch (const std::exception& e) 
         {
-            RCLCPP_ERROR(this->get_logger(), "Error converting point cloud: %s", e.what());
+            RCLCPP_ERROR(this->get_logger(), "Error processing compressed image: %s", e.what());
         }
     }
 
