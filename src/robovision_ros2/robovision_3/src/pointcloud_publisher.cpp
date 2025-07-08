@@ -76,9 +76,9 @@ private:
       last_rgb_time_ = msg->header.stamp;
       RCLCPP_INFO(this->get_logger(), "RGB image received.");
 
-      // Display the RGB image for debugging purposes
-      cv::imshow("RGB View", cv_ptr->image);
-      cv::waitKey(1);
+      // (Optional) Remove or comment out RGB display
+      // cv::imshow("RGB View", cv_ptr->image);
+      // cv::waitKey(1);
     } catch (cv_bridge::Exception &e) {
       RCLCPP_ERROR(this->get_logger(), "cv_bridge exception in RGB callback: %s", e.what());
     }
@@ -154,6 +154,13 @@ private:
           ++iter_x; ++iter_y; ++iter_z; ++iter_rgb;
         }
       }
+
+      // Display depth image for debugging purposes
+      cv::Mat depth_display;
+      cv::normalize(depth, depth_display, 0, 255, cv::NORM_MINMAX);
+      depth_display.convertTo(depth_display, CV_8UC1);
+      cv::imshow("Depth View", depth_display);
+      cv::waitKey(1);
 
       pc_pub_->publish(cloud_msg);
       RCLCPP_INFO(this->get_logger(), "Published point cloud with %d points", cloud_msg.width);
