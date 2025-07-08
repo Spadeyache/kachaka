@@ -48,7 +48,7 @@ private:
         int v = static_cast<int>(latest_center_of_mass_->y);
 
         // Ensure the indices are within the point cloud dimensions
-        if (u < 0 || v < 0 || u >= latest_pointcloud_->width || v >= latest_pointcloud_->height) {
+        if (u < 0 || v < 0 || static_cast<unsigned int>(u) >= latest_pointcloud_->width || static_cast<unsigned int>(v) >= latest_pointcloud_->height) {
             RCLCPP_WARN(this->get_logger(), "Center of mass is out of point cloud bounds.");
             return;
         }
