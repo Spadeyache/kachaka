@@ -17,7 +17,7 @@ public:
             "/kn_pointcloud2", 10,
             std::bind(&DistanceComputationNode::pointCloudCallback, this, std::placeholders::_1));
 
-        distance_pub_ = this->create_publisher<std_msgs::msg::Float32>("/object_distance", 10);
+        distance_pub_ = this->create_publisher<std_msgs::msg::Float32>("/kn_object_distance", 10);
     }
 
 private:

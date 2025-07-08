@@ -45,6 +45,14 @@ ament_target_dependencies(pointcloud_publisher
   message_filters
 )
 
+add_executable(distance_computation2object src/distance_computation2object.cpp)
+ament_target_dependencies(distance_computation2object
+    rclcpp
+    sensor_msgs
+    geometry_msgs
+    std_msgs
+)
+
 
 # Python section
 ament_python_install_package(${PROJECT_NAME})
@@ -53,6 +61,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(TARGETS
   rgbd_reader
   pointcloud_publisher
+  distance_computation2object
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS
