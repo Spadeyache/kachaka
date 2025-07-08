@@ -44,8 +44,8 @@ ament_target_dependencies(Kachaka_motor_publisher
     sensor_msgs
     OpenCV
 )
-add_executable(blue_Follower src/blue_Follower.cpp)
-ament_target_dependencies(blue_Follower
+add_executable(DepthViewer src/DepthViewer.cpp)
+ament_target_dependencies(DepthViewer
     rclcpp 
     cv_bridge 
     sensor_msgs 
@@ -59,7 +59,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(TARGETS
   my_processing
   motor-publisher
-  blue_Follower
+  DepthViewer
   Kachaka_motor_publisher
   DESTINATION lib/${PROJECT_NAME}
 )
