@@ -17,9 +17,9 @@ public:
   RGBDPointCloudPublisher()
   : Node("rgbd_pointcloud_publisher")
   {
-    rgb_sub_.subscribe(this, "/rgb/image_raw");
-    depth_sub_.subscribe(this, "/depth/image_raw");
-    info_sub_.subscribe(this, "/depth/camera_info");
+    rgb_sub_.subscribe(this, "/er_kachaka/image_raw");
+    depth_sub_.subscribe(this, "/er_kachaka/tof_camera/image_raw");
+    info_sub_.subscribe(this, "/er_kachaka/tof_camera/image_raw/camera_info");
 
     sync_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(
       SyncPolicy(10), rgb_sub_, depth_sub_, info_sub_);
