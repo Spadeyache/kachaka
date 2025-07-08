@@ -87,6 +87,8 @@ private:
         auto distance_msg = std_msgs::msg::Float32();
         distance_msg.data = distance;
         distance_pub_->publish(distance_msg);
+
+        RCLCPP_INFO(this->get_logger(), "Object distance: %.3f m", distance);
     }
 };
 

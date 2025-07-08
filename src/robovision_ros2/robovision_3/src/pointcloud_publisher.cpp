@@ -75,6 +75,10 @@ private:
       latest_rgb_ = cv_ptr->image;
       last_rgb_time_ = msg->header.stamp;
       RCLCPP_INFO(this->get_logger(), "RGB image received.");
+
+      // Display the RGB image for debugging purposes
+      cv::imshow("RGB View", cv_ptr->image);
+      cv::waitKey(1);
     } catch (cv_bridge::Exception &e) {
       RCLCPP_ERROR(this->get_logger(), "cv_bridge exception in RGB callback: %s", e.what());
     }
