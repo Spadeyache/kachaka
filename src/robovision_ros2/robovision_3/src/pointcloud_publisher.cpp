@@ -17,9 +17,13 @@ public:
   RGBDPointCloudPublisher()
   : Node("rgbd_pointcloud_publisher")
   {
-    rgb_sub_.subscribe(this, "/er_kachaka/image_raw");
-    depth_sub_.subscribe(this, "/er_kachaka/tof_camera/image_raw");
-    info_sub_.subscribe(this, "/er_kachaka/tof_camera/image_raw/camera_info");
+    // Define QoS settings
+    auto qos = rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_sensor_data));
+    qos.reliability(RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT);
+
+    rgb_sub_.subscribe(this, "/er_kachaka/image_raw", qos.get_rmw_qos_profile());
+    depth_sub_.subscribe(this, "/er_kachaka/tof_camera/image_raw", qos.get_rmw_qos_profile());
+    info_sub_.subscribe(this, "/er_kachaka/tof_camera/image_raw/camera_info", qos.get_rmw_qos_profile());
 
     sync_ = std::make_shared<message_filters::Synchronizer<SyncPolicy>>(
       SyncPolicy(10), rgb_sub_, depth_sub_, info_sub_);
