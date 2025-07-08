@@ -60,7 +60,7 @@ private:
 
             // Reduce resolution for less computation
             cv::Mat resized_image;
-            cv::resize(image_, resized_image, cv::Size(), 0.5, 0.5);
+            cv::resize(image_, resized_image, cv::Size(), 0.1, 0.1);//0.5
 
             // Define ROI to ignore the top third of the image
             int roi_start_y = resized_image.rows / 5;
@@ -72,15 +72,6 @@ private:
             cv::cvtColor(image_roi, hsv, cv::COLOR_BGR2HSV);
             cv::Mat binary_mask;
             cv::inRange(hsv, cv::Scalar(100, 150, 0), cv::Scalar(140, 255, 255), binary_mask);
-
-            // Display the binary mask before morphological operations
-            cv::imshow("binary_mask_before", binary_mask);
-            cv::waitKey(1);
-
-            // Apply morphological operations for noise reduction
-            cv::Mat morph_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
-            cv::erode(binary_mask, binary_mask, morph_kernel);
-            cv::dilate(binary_mask, binary_mask, morph_kernel);
 
             // Find the center of intensity
             cv::Moments m = cv::moments(binary_mask, true);
