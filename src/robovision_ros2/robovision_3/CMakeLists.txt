@@ -19,7 +19,6 @@ find_package(geometry_msgs REQUIRED)
 
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
-find_package(message_filters REQUIRED)  # Add this line
 
 include_directories(${cv_bridge_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
@@ -34,18 +33,15 @@ ament_target_dependencies(rgbd_reader
     tf2
     tf2_geometry_msgs
 )
-
-add_executable(rgbd_pointClowd src/rgbd_pointClowd.cpp)
-ament_target_dependencies(rgbd_pointClowd 
-    rclcpp 
-    cv_bridge 
-    sensor_msgs 
-    geometry_msgs
-    OpenCV
-    tf2
-    tf2_geometry_msgs
-    message_filters  # Add this line
+add_executable(pointcloud_publisher src/pointcloud_publisher.cpp)
+ament_target_dependencies(pointcloud_publisher
+  rclcpp
+  sensor_msgs
+  image_transport
+  cv_bridge
+  message_filters
 )
+
 
 # Python section
 ament_python_install_package(${PROJECT_NAME})
@@ -53,12 +49,13 @@ ament_python_install_package(${PROJECT_NAME})
 # Ensure both are included
 install(TARGETS
   rgbd_reader
-  rgbd_pointClowd
+  pointcloud_publisher
   DESTINATION lib/${PROJECT_NAME}
 )
 install(PROGRAMS
   scripts/rgbd_reader.py
   DESTINATION lib/${PROJECT_NAME}
 )
+
 
 ament_package()
