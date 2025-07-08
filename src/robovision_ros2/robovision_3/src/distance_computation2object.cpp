@@ -53,15 +53,20 @@ private:
             return;
         }
 
+        // Calculate the index in the point cloud data
+        int index = v * latest_pointcloud_->width + u;
+
+        // Initialize iterators
         sensor_msgs::PointCloud2ConstIterator<float> iter_x(*latest_pointcloud_, "x");
         sensor_msgs::PointCloud2ConstIterator<float> iter_y(*latest_pointcloud_, "y");
         sensor_msgs::PointCloud2ConstIterator<float> iter_z(*latest_pointcloud_, "z");
 
-        // Calculate the index in the point cloud data
-        int index = v * latest_pointcloud_->width + u;
-        std::advance(iter_x, index);
-        std::advance(iter_y, index);
-        std::advance(iter_z, index);
+        // Move iterators to the desired index
+        for (int i = 0; i < index; ++i) {
+            ++iter_x;
+            ++iter_y;
+            ++iter_z;
+        }
 
         float x = *iter_x;
         float y = *iter_y;
