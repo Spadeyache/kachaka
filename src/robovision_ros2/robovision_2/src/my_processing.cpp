@@ -23,7 +23,7 @@ public:
 
         // Publishers
         delta_x_publisher_ = this->create_publisher<std_msgs::msg::Int32>("/kn_delta", 10);
-        center_of_mass_publisher_ = this->create_publisher<geometry_msgs::msg::Point>("/center_of_mass", 10);
+        center_of_mass_publisher_ = this->create_publisher<geometry_msgs::msg::Point>("/kn_center_of_mass", 10);
 
         //Processing
         image_processing_timer_ = this->create_wall_timer(
