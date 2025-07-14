@@ -85,7 +85,7 @@ private:
 
             // Find the center of intensity
             cv::Moments m = cv::moments(binary_mask, true);
-            if (m.m00 > 1000) {
+            if (m.m00 > 0) {
                 double cx = m.m10 / m.m00;
                 double cy = m.m01 / m.m00;
                 if (std::isfinite(cx) && std::isfinite(cy)) {
