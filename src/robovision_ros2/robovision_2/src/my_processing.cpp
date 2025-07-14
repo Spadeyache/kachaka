@@ -94,6 +94,7 @@ private:
                 // Calculate delta x
                 int image_center_x = resized_image.cols / 2;
                 int delta_x = center_x - image_center_x;
+                std::cout << "Publishing delta_x: " << delta_x << std::endl;
 
                 // Publish delta x
                 auto message = std_msgs::msg::Int32();
@@ -110,9 +111,7 @@ private:
                 // Draw a red dot at the center of intensity
                 cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
             } else {
-                // Optionally: do not publish, or publish a special value, or keep last value
-                // For example:
-                // std::cout << "No object detected, skipping publish." << std::endl;
+                std::cout << "No object detected, skipping publish." << std::endl;
             }
 
             // Display the binary mask and the image with the red dot
