@@ -84,30 +84,36 @@ private:
 
             // Find the center of intensity
             cv::Moments m = cv::moments(binary_mask, true);
-            int center_x = static_cast<int>(m.m10 / m.m00);
-            int center_y = static_cast<int>(m.m01 / m.m00);
+            if (m.m00 > 0) {
+                int center_x = static_cast<int>(m.m10 / m.m00);
+                int center_y = static_cast<int>(m.m01 / m.m00);
 
-            // Adjust center_y to account for the ROI offset
-            center_y += roi_start_y;
+                // Adjust center_y to account for the ROI offset
+                center_y += roi_start_y;
 
-            // Calculate delta x
-            int image_center_x = resized_image.cols / 2;
-            int delta_x = center_x - image_center_x;
+                // Calculate delta x
+                int image_center_x = resized_image.cols / 2;
+                int delta_x = center_x - image_center_x;
 
-            // Publish delta x
-            auto message = std_msgs::msg::Int32();
-            message.data = delta_x;
-            delta_x_publisher_->publish(message);
+                // Publish delta x
+                auto message = std_msgs::msg::Int32();
+                message.data = delta_x;
+                delta_x_publisher_->publish(message);
 
-            // Publish center of mass
-            auto center_of_mass_message = geometry_msgs::msg::Point();
-            center_of_mass_message.x = center_x;
-            center_of_mass_message.y = center_y;
-            center_of_mass_message.z = 0; // z is not used
-            center_of_mass_publisher_->publish(center_of_mass_message);
+                // Publish center of mass
+                auto center_of_mass_message = geometry_msgs::msg::Point();
+                center_of_mass_message.x = center_x;
+                center_of_mass_message.y = center_y;
+                center_of_mass_message.z = 0; // z is not used
+                center_of_mass_publisher_->publish(center_of_mass_message);
 
-            // Draw a red dot at the center of intensity
-            cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
+                // Draw a red dot at the center of intensity
+                cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
+            } else {
+                // Optionally: do not publish, or publish a special value, or keep last value
+                // For example:
+                // std::cout << "No object detected, skipping publish." << std::endl;
+            }
 
             // Display the binary mask and the image with the red dot
             cv::imshow("binary_mask", binary_mask);
