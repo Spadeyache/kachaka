@@ -5,6 +5,7 @@
 #include <opencv2/opencv.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <geometry_msgs/msg/point.hpp>
+#include <cmath> // for std::isfinite
 
 
 class ImageProcessingNode : public rclcpp::Node
@@ -84,32 +85,40 @@ private:
 
             // Find the center of intensity
             cv::Moments m = cv::moments(binary_mask, true);
-            if (m.m00 > 0) {
-                int center_x = static_cast<int>(m.m10 / m.m00);
-                int center_y = static_cast<int>(m.m01 / m.m00);
+            if (m.m00 > 1000) {
+                double cx = m.m10 / m.m00;
+                double cy = m.m01 / m.m00;
+                if (std::isfinite(cx) && std::isfinite(cy)) {
+                    int center_x = static_cast<int>(cx);
+                    int center_y = static_cast<int>(cy);
+                    std::cout << "center x: " << center_x << std::endl;
+                    std::cout << "center y: " << center_y << std::endl;
 
-                // Adjust center_y to account for the ROI offset
-                center_y += roi_start_y;
+                    // Adjust center_y to account for the ROI offset
+                    center_y += roi_start_y;
 
-                // Calculate delta x
-                int image_center_x = resized_image.cols / 2;
-                int delta_x = center_x - image_center_x;
-                std::cout << "Publishing delta_x: " << delta_x << std::endl;
+                    // Calculate delta x
+                    int image_center_x = resized_image.cols / 2;
+                    int delta_x = center_x - image_center_x;
+                    std::cout << "Publishing delta_x: " << delta_x << std::endl;
 
-                // Publish delta x
-                auto message = std_msgs::msg::Int32();
-                message.data = delta_x;
-                delta_x_publisher_->publish(message);
+                    // Publish delta x
+                    auto message = std_msgs::msg::Int32();
+                    message.data = delta_x;
+                    delta_x_publisher_->publish(message);
 
-                // Publish center of mass
-                auto center_of_mass_message = geometry_msgs::msg::Point();
-                center_of_mass_message.x = center_x;
-                center_of_mass_message.y = center_y;
-                center_of_mass_message.z = 0; // z is not used
-                center_of_mass_publisher_->publish(center_of_mass_message);
+                    // Publish center of mass
+                    auto center_of_mass_message = geometry_msgs::msg::Point();
+                    center_of_mass_message.x = center_x;
+                    center_of_mass_message.y = center_y;
+                    center_of_mass_message.z = 0; // z is not used
+                    center_of_mass_publisher_->publish(center_of_mass_message);
 
-                // Draw a red dot at the center of intensity
-                cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
+                    // Draw a red dot at the center of intensity
+                    cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
+                } else {
+                    std::cout << "Invalid centroid: NaN or Inf" << std::endl;
+                }
             } else {
                 std::cout << "No object detected, skipping publish." << std::endl;
             }
