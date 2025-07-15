@@ -1,0 +1,142 @@
+#include "rclcpp/rclcpp.hpp"
+
+#include <sensor_msgs/msg/image.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/opencv.hpp>
+#include <std_msgs/msg/int32.hpp>
+#include <geometry_msgs/msg/point.hpp>
+#include <cmath> // for std::isfinite
+
+
+class ImageProcessingNode : public rclcpp::Node
+{
+public:
+    ImageProcessingNode() : Node("image_processing"), is_image_(false)
+    {
+        counter_ = 0;
+
+        //Subscribers
+        rclcpp::QoS qos(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_sensor_data));
+        qos.reliability(RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT);
+
+        image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>(
+            "/er_kachaka/front_camera/image_raw", qos, std::bind(&ImageProcessingNode::callback_image, this, std::placeholders::_1));
+
+        // Publishers
+        delta_x_publisher_ = this->create_publisher<std_msgs::msg::Int32>("/kn_delta", 10);
+        center_of_mass_publisher_ = this->create_publisher<geometry_msgs::msg::Point>("/kn_center_of_mass", 10);
+
+        //Processing
+        image_processing_timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(30),
+            std::bind(&ImageProcessingNode::image_processing, this));
+
+        RCLCPP_INFO(this->get_logger(), "Starting image_processing application in cpp...");
+    }
+
+private:
+
+    bool is_image_;
+    int counter_;
+    cv::Mat image_;
+    sensor_msgs::msg::Image::SharedPtr image_msg_;
+
+    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr delta_x_publisher_;
+    rclcpp::Publisher<geometry_msgs::msg::Point>::SharedPtr center_of_mass_publisher_;
+    rclcpp::TimerBase::SharedPtr image_processing_timer_;
+    
+    void callback_image(const sensor_msgs::msg::Image::SharedPtr msg)
+    {
+        image_ = cv_bridge::toCvCopy(msg, "bgr8")->image;
+        is_image_ = true;
+    }
+
+    void image_processing()
+    {
+        if (is_image_){
+            if (counter_ == 0){
+                std::cout << "size: rows: " << image_.rows << 
+                             ", cols: " << image_.cols << 
+                             ", depth: " << image_.channels() << std::endl;
+            }
+            counter_++;
+
+            // Reduce resolution for less computation
+            cv::Mat resized_image;
+            cv::resize(image_, resized_image, cv::Size(), 0.5, 0.5);
+
+            // Define ROI to ignore the top third of the image
+            int roi_start_y = resized_image.rows / 5;
+            cv::Rect roi(0, roi_start_y, resized_image.cols, resized_image.rows - roi_start_y);
+            cv::Mat image_roi = resized_image(roi);
+
+            // Convert to HSV and create a binary mask
+            cv::Mat hsv;
+            cv::cvtColor(image_roi, hsv, cv::COLOR_BGR2HSV);
+            cv::Mat binary_mask;
+            cv::inRange(hsv, cv::Scalar(100, 220, 0), cv::Scalar(110, 255, 255), binary_mask);
+            // 100, 150, 0 - 140, 255, 255
+
+            // Apply morphological operations for noise reduction
+            cv::Mat morph_kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+            cv::erode(binary_mask, binary_mask, morph_kernel);
+            cv::dilate(binary_mask, binary_mask, morph_kernel);
+
+            // Find the center of intensity
+            cv::Moments m = cv::moments(binary_mask, true);
+            if (m.m00 > 0) {
+                double cx = m.m10 / m.m00;
+                double cy = m.m01 / m.m00;
+                if (std::isfinite(cx) && std::isfinite(cy)) {
+                    int center_x = static_cast<int>(cx);
+                    int center_y = static_cast<int>(cy);
+                    std::cout << "center x: " << center_x << std::endl;
+                    std::cout << "center y: " << center_y << std::endl;
+
+                    // Adjust center_y to account for the ROI offset
+                    center_y += roi_start_y;
+
+                    // Calculate delta x
+                    int image_center_x = resized_image.cols / 2;
+                    int delta_x = center_x - image_center_x;
+                    std::cout << "Publishing delta_x: " << delta_x << std::endl;
+
+                    // Publish delta x
+                    auto message = std_msgs::msg::Int32();
+                    message.data = delta_x;
+                    delta_x_publisher_->publish(message);
+
+                    // Publish center of mass
+                    auto center_of_mass_message = geometry_msgs::msg::Point();
+                    center_of_mass_message.x = center_x;
+                    center_of_mass_message.y = center_y;
+                    center_of_mass_message.z = 0; // z is not used
+                    center_of_mass_publisher_->publish(center_of_mass_message);
+
+                    // Draw a red dot at the center of intensity
+                    cv::circle(resized_image, cv::Point(center_x, center_y), 5, cv::Scalar(0, 0, 255), -1);
+                } else {
+                    std::cout << "Invalid centroid: NaN or Inf" << std::endl;
+                }
+            } else {
+                std::cout << "No object detected, skipping publish." << std::endl;
+            }
+
+            // Display the binary mask and the image with the red dot
+            cv::imshow("binary_mask", binary_mask);
+            cv::imshow("raw", resized_image);
+            cv::waitKey(1);
+        }
+        
+    }
+};
+
+int main(int argc, char **argv)
+{
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<ImageProcessingNode>();
+    rclcpp::spin(node);
+    rclcpp::shutdown();
+    return 0;
+}
