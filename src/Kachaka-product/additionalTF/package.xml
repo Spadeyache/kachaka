@@ -1,15 +1,19 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>tf2_addon</name>
-  <version>0.1.0</version>
-  <description>Static TF2 broadcaster in C++</description>
-  <maintainer email="your@email.com">Your Name</maintainer>
-  <license>Apache-2.0</license>
+  <name>rgbd_tf_publisher</name>
+  <version>0.0.1</version>
+  <description>Publishes a static transform between base_link and camera_link.</description>
+  <maintainer email="magic.global.k@gmail.com">Spadeyache</maintainer>
+  <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
-  <depend>geometry_msgs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

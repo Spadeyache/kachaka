@@ -16,7 +16,7 @@ public:
 
     static_transform.header.stamp = this->get_clock()->now();
     static_transform.header.frame_id = "base_link";
-    static_transform.child_frame_id = "camera_link";
+    static_transform.child_frame_id = "rgbd_camera_link";
 
     static_transform.transform.translation.x = 0.1;
     static_transform.transform.translation.y = 0.0;
