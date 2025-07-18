@@ -18,9 +18,9 @@ public:
     static_transform.header.frame_id = "base_link";
     static_transform.child_frame_id = "rgbd_camera_link";
 
-    static_transform.transform.translation.x = 0.1;
+    static_transform.transform.translation.x = -0.2;
     static_transform.transform.translation.y = 0.0;
-    static_transform.transform.translation.z = 0.2;
+    static_transform.transform.translation.z = 0.25;
 
     tf2::Quaternion quat;
     quat.setRPY(0, 0, 0);  // roll, pitch, yaw
