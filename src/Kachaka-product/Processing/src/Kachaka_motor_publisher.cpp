@@ -16,6 +16,11 @@ public:
         delta_x_subscriber_ = this->create_subscription<std_msgs::msg::Int32>(
             "/kn_delta", 10, std::bind(&MotorPublisher::callback_delta_x, this, std::placeholders::_1));
 
+        distance2object_subscriber_ = this->create_subscription<std_msgs::msg::Int32>(
+            "/kn_objDistance", 10, std::bind(&MotorPublisher::callback_distance2object, this, std::placeholders::_1)
+        );
+        // subscribe to kn transformed object centroid and apply that to kachka motor controol 
+
         // Timer 2: info logger every 1s
         info_timer_ = this->create_wall_timer(1.5s, [this]() {
             RCLCPP_INFO(this->get_logger(), "nodegit _loop");
@@ -38,8 +43,16 @@ private:
             message.angular.z = 0.8;
         }
         else if(abs(delta_x_) < 20){
-            message.angular.z = 0.0;
-            message.linear.x = 0.3;
+            if(distanceOBJ_ > 10){
+                message.angular.z = 0.0;
+                message.linear.x = 0.3;
+            }
+            else{
+                message.angular.z = 0.0;
+                message.angular.x = 0.0;
+                RCLCPP_INFO(this->get_logger(), "less or equan to 10 units away from object");
+            }
+            
             // add a code for the motor to move till 10cm form the object
         }
         else{
@@ -59,10 +72,17 @@ private:
         RCLCPP_INFO(this->get_logger(), "Received delta x: %d", delta_x_);
     }
 
+    void callback_distance2object(const std_msgs::msg::Int32::SharedPtr msg){
+        distanceOBJ_ = msg->data;
+        RCLCPP_INFO(this->get_logger(), "Received distanceOBJ x: %d", distanceOBJ_);
+    }
+
     int state_;
     int delta_x_ = 0;
+    int distanceOBJ_ = 0;
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
     rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr delta_x_subscriber_;
+    rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr distance2object_subscriber_;
     rclcpp::TimerBase::SharedPtr motion_timer_;
     rclcpp::TimerBase::SharedPtr info_timer_;
 };
